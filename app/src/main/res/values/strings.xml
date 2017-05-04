@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">鸦鹊岭水务</string>
+    <string name="update">上传</string>
+    <string name="download">下载</string>
+    <string name="scan">抄表</string>
+    <string name="tj">统计</string>
+    <string name="title">鸦鹊水务</string>
+    <array name="updatelist">
+        <item>上传电话</item>
+        <item>上传性质</item>
+        <item>上报缴费</item>
+    </array>
+
+
+    <string name="copyright">"Copyright ©2015 ZhTech Co.,ltd All Rights Reserved"</string>
+    <string name="ZhTech">广州展宏信息科技有限公司</string>
+
+
+</resources>

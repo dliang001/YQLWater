@@ -1,0 +1,86 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.yq.fragment.TongJiFragment">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="5dp">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|left"
+                android:text="点我选择年月:"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tv_select_time"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center|left"
+                android:inputType="number"
+                android:maxLength="6"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bk"
+                android:textColor="@android:color/black" />
+
+            <Button
+                android:id="@+id/btn_tj_wait"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/btn_bg"
+                android:text="查询"
+                android:textColor="@color/btn_text_color"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:text="未抄表数量："/>
+
+                <TextView
+                    android:id="@+id/tv_wait_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:text=""/>
+
+            </LinearLayout>
+
+            <!--android:divider="#00000000"   去掉线-->
+            <!--android:dividerHeight="10dp"  线高，透明的 -->
+            <ListView
+                android:id="@+id/lv_tj_wait"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:padding="5dp"
+                android:divider="#00000000"
+                android:dividerHeight="10dp"
+                android:background="@drawable/bk">
+
+            </ListView>
+
+        </LinearLayout>
+
+</LinearLayout>

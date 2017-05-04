@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="10dp"
+        android:gravity="center|left"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimaryDark">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/selectTime"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:textSize="18dp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:text="选择抄表月份:" />
+
+            <TextView
+                android:id="@+id/yuefen"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:gravity="center|left"
+                android:textSize="18dp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:text="201612" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_ycbz"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_ycbz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:text="未抄" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
