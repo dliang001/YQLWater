@@ -28,6 +28,7 @@ public class BluethBean {
     public boolean isAdd() {
         return isAdd;
     }
+
     /** 这个蓝牙是不是被添加过的？ -- 是就不用配对连接 */
     public void setAdd(boolean add) {
         isAdd = add;

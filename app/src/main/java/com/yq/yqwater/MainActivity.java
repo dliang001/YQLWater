@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,6 +19,7 @@ import com.smtlibrary.tabbars.anno.SeleIcons;
 import com.smtlibrary.tabbars.anno.Titles;
 import com.smtlibrary.utils.LogUtils;
 import com.yq.adapt.Adapter;
+import com.yq.fragment.BuletoothFragment;
 import com.yq.fragment.DownFragment;
 import com.yq.fragment.ScanFragment;
 import com.yq.fragment.TongJiFragment;
@@ -24,6 +27,7 @@ import com.yq.fragment.UpdateFragment;
 import com.yq.tools.DBManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private List<Fragment> mTabContents;
     private Adapter mAdapter;
+
+
 
     /** 低下的标题栏 */
     private JPTabBar mTabbar;
@@ -48,13 +54,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Titles
-    private static final int[] mTitles = {R.string.update, R.string.scan, R.string.tj, R.string.download};
+    private static final int[] mTitles = {R.string.update, R.string.scan, R.string.tj, R.string.download, R.string.buletooth};
 
     @SeleIcons
-    private static final int[] mSeleIcons = {R.mipmap.upload, R.mipmap.scan, R.mipmap.chart, R.mipmap.download};
+    private static final int[] mSeleIcons = {R.mipmap.upload, R.mipmap.scan, R.mipmap.chart, R.mipmap.download, R.mipmap.bluetooth};
 
     @NorIcons
-    private static final int[] mNormalIcons = {R.mipmap.upload_nomal, R.mipmap.scan_nomal, R.mipmap.chart_nomal, R.mipmap.download_nomal};
+    private static final int[] mNormalIcons = {R.mipmap.upload_nomal, R.mipmap.scan_nomal, R.mipmap.chart_nomal, R.mipmap.download_nomal, R.mipmap.bluetooth_nomal};
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +83,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mTabbar = (JPTabBar) findViewById(R.id.tabbar);
+
         initData();
     }
 
@@ -88,10 +96,11 @@ public class MainActivity extends AppCompatActivity {
         mTabContents.add(ScanFragment.newInstance());
         mTabContents.add(TongJiFragment.newInstance());
         mTabContents.add(DownFragment.newInstance(1));
+        mTabContents.add(BuletoothFragment.newInstance());
 
         mAdapter = new Adapter(getSupportFragmentManager(), mTabContents);
         mViewPager.setAdapter(mAdapter);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(5);
 
         //设置容器
         mTabbar.setContainer(mViewPager);
@@ -150,4 +159,5 @@ public class MainActivity extends AppCompatActivity {
 
         stopService(new Intent(this, MyUpLoadService.class));
     }
+
 }

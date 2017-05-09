@@ -11,12 +11,12 @@ import com.yq.model.BluethBean;
 
 import java.util.List;
 
-public class MyListAdapter extends BaseAdapter {
+public class BluethListAdapter extends BaseAdapter {
     private Context mContext;
     private List<BluethBean> mDevices;
     private BluetoothDevice device;
 
-    public MyListAdapter(Context context, List<BluethBean> devices) {
+    public BluethListAdapter(Context context, List<BluethBean> devices) {
         mContext = context;
         mDevices = devices;
     }

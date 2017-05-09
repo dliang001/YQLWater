@@ -4,6 +4,8 @@
     <string name="download">下载</string>
     <string name="scan">抄表</string>
     <string name="tj">统计</string>
+    <string name="buletooth">蓝牙</string>
+
     <string name="title">鸦鹊水务</string>
     <array name="updatelist">
         <item>上传电话</item>

@@ -42,7 +42,7 @@ import com.smtlibrary.utils.PreferenceUtils;
 import com.yq.fragment.item.BaseFragment;
 import com.yq.model.BluethBean;
 import com.yq.model.Cbj;
-import com.yq.tools.MyListAdapter;
+import com.yq.tools.BluethListAdapter;
 import com.yq.utils.PlayRing;
 import com.yq.utils.Prices;
 import com.yq.utils.TimeUtils;
@@ -71,7 +71,6 @@ import static com.yq.utils.Prices.m2;
 import static com.yq.yqwater.R.id.bt_inputDzbq;
 import static com.yq.yqwater.R.id.bt_print;
 import static com.yq.yqwater.R.id.bt_scanrfid;
-import static com.yq.yqwater.R.id.bt_sourcebult;
 import static com.yq.yqwater.R.id.et_benyuebs;
 import static com.yq.yqwater.R.id.et_dzbq;
 import static com.yq.yqwater.R.id.tv_dh;
@@ -120,15 +119,9 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
     @Bind(R.id.bt_payMoney)
     Button btPayMoney;
 
-    /** 搜索蓝牙 -- 按钮*/
-    @Bind(bt_sourcebult)
-    Button btSourcebult;
     /** 打印 -- 按钮*/
     @Bind(bt_print)
     Button btPrint;
-    /** 显示搜出的蓝牙设备 --  列表控件 */
-    @Bind(R.id.lv_scanbul)
-    MyListView lvScanbul;
 
     /** 收款方式: 银行抵扣 -- 文本 -- 一开始是隐藏的*/
     @Bind(R.id.tv_showBankinfo)
@@ -142,25 +135,9 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
     LinearLayout phoneLayout;
 
     private ScanThread scanThread;
-    private static final UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    public static BluetoothDevice mdevice = null;
-    public static String mDeviceAddress = "";
 
-    /** 蓝牙的适配器 */
-    private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    private List<BluetoothDevice> bondedDevicesList;
-
-    /** 存放"蓝牙设备"的列表 */
-    private List<BluethBean> searchDevicesList;
-    private MyListAdapter mSearchAdapter;
-    /** 蓝牙设置--当前连接的？ */
     private BluetoothDevice device;
-    /** 蓝牙设置--对应的输出流 */
-    private OutputStream outputStream;
-    /** 蓝牙设置--对应的输入流 */
-    private InputStream inputStream;
-    /** 蓝牙设置--对应的socket */
-    private BluetoothSocket socket;
+
 
     private String prinshowinfo = "";
     private String dzpd = "";
@@ -310,7 +287,7 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                         mTvHmph.setText(cbj.getHmph());          // 用户编号 -- 户号
                         mTvHm.setText(cbj.getHm());              // 户名
                         mTvDzbq.setText(cbj.getDzbq());          // 户名
-                        mTvDh.setText(cbj.getDh());              // 电话号码
+                        mTvDh.setText(TextUtils.isEmpty(cbj.getDh()) ? "" : cbj.getDh());              // 电话号码
 
                         mTvBeny.setText("");                     // 本月表数
                         mTvCmds0.setText(cbj.getCmds0());        // 上月表数
@@ -384,108 +361,33 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
 
         yuefen.setText(TimeUtils.getCurrentTimeyyyyMM());                            // 年月
 
-
         mLayoutYcbz.setVisibility(View.GONE);
 
         // 测试！
         // etDzbq.setText("0005657249");
 
-        searchDevicesList = new ArrayList<BluethBean>();                            // 蓝牙list
-        mSearchAdapter = new MyListAdapter(getActivity(), searchDevicesList);
-        lvScanbul.setAdapter(mSearchAdapter);
-        lvScanbul.setOnItemClickListener(new AdapterView.OnItemClickListener() {    // 蓝牙ListView点击事件
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // btPrint.setEnabled(false);
 
-                BluethBean b = searchDevicesList.get(position);
-                device = b.getBluetoothDevice();
-
-                if (b.isAdd()) {                                    // 曾经配对过的
-                    connect(device);                                // 连接获得输入输出流
-                } else {
-                    try {
-                        // 配对
-                        Method createBondMethod = BluetoothDevice.class.getMethod("createBond");
-                        createBondMethod.invoke(device);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        });
-
-        btPrint.setEnabled(false);
-        btSourcebult.setEnabled(false);
-
-        // 注册用以接收到--已搜索到的--蓝牙设备的receiver      过滤器
-        IntentFilter mFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        mFilter.addAction(BluetoothDevice.ACTION_FOUND);
-        mFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        mFilter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-        mFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        mFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
-        // 注册广播接收器，接收并处理搜索结果
-        getActivity().registerReceiver(receiver, mFilter);
-
-
-        if (null != bluetoothAdapter) {
-
-            // 得到所有———已经配对的————蓝牙适配器对象
-            // Set -- 集合 没有重复
-            Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-
-            if (devices.size() > 0) {
-                //用迭代
-                for (Iterator iterator = devices.iterator(); iterator.hasNext(); ) {
-                    //得到BluetoothDevice对象,也就是说得到配对的蓝牙适配器
-                    BluetoothDevice device = (BluetoothDevice) iterator.next();
-
-                    //得到远程蓝牙设备的地址
-                    LogUtils.sysout("mytag", device.getAddress());
-
-                    searchDevicesList.add(new BluethBean(device, true));        // 放到 蓝牙ListView ,刷新数据
-                    mSearchAdapter.notifyDataSetChanged();
-                }
-            }
-
-        }
-
-
-        //从SharedPreferences取出上月余额 ？
         return view;
     }
 
 
     @Override
-    public void onPause() {
-//        Log.d("m520","onPause被执行了...");
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-//        Log.d("m520","onStop被执行了...");
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-//        Log.d("m520","onDestroy被执行了...");
-        if (device != null) {
-            close();
-            System.out.println("清空!!!");
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // 相当于onResume()方法
+        } else {
+            // 相当于onpause()方法
         }
-        getActivity().unregisterReceiver(receiver);
-        super.onDestroy();
     }
+
 
 
     /**************************** onCreate  打开RFID  *********************************/
     @Override
     public void onCreate(Bundle savedInstanceState) {
-//        Log.d("m520","onCreate被执行了...");
+        Log.d("m520","onCreate被执行了...");
         try {
             mLF = RFIDWithLF.getInstance();
             System.out.println("获取成功");
@@ -503,7 +405,7 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
     }
 
     /****************************** 点击事件 ************************************/
-    @OnClick({bt_inputDzbq, bt_scanrfid, R.id.bybs, R.id.bt_save, R.id.bt_payMoney, bt_sourcebult, bt_print, R.id.selectTime, R.id.yuefen})
+    @OnClick({bt_inputDzbq, bt_scanrfid, R.id.bybs, R.id.bt_save, R.id.bt_payMoney, bt_print, R.id.selectTime, R.id.yuefen})
     public void onClick(View v) {
         switch (v.getId()) {
             case bt_scanrfid:                                           // 点击 "扫描抄表"
@@ -521,8 +423,6 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                     bybs.setText(beny);
                     // 计算水量
                     int sl = (Integer.parseInt(beny) - Integer.parseInt(cbj.getCmds0()));
-                    // 修改数量 Integer.parseInt(cbj.getDds())*2
-                    //                    sl = sl <= Integer.parseInt(cbj.getDds())*2 ? 2 * Integer.parseInt(cbj.getDds()) : sl;
 
                     // yfs抄表月数返回是0时, 判断当月用水量是否 --- 小于底吨数,是的话就取 -- 底吨数,否者按实际的算
                     if (ZERO == cbj.getYfs())
@@ -551,26 +451,27 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                             "本月结余:" + byjy + "\n" +
                             "收费人:" + getUserName() + "\n" +
                             "收费时间:" + TimeUtils.getCurrentTime() + "\n\n\n";
-                    try {
-                        outputStream.write(prinshowinfo.getBytes("GBK"));
-                        outputStream.flush();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+                    if(MeApplcition.bluetoothSocket != null) {
+                        if(MeApplcition.bluetoothSocket.isConnected() &&
+                                MeApplcition.bluetoothOutputStream != null) {
+                            try {
+                                MeApplcition.bluetoothOutputStream.write(prinshowinfo.getBytes("GBK"));
+                                MeApplcition.bluetoothOutputStream.flush();
+                            }catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getActivity(), "连接错误："+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(getActivity(), "请连接蓝牙设备", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(getActivity(), "请选择蓝牙设备", Toast.LENGTH_SHORT).show();
                     }
 
                 }
-                //TODO
-                // close(); //关闭蓝牙连接socket
+
                 break;
-
-
-            case bt_sourcebult:                                                             //  "搜索蓝牙" 按钮 -- 不可交互
-                Toast.makeText(getActivity(), "正在搜索,请稍等!", Toast.LENGTH_LONG).show();
-                checkBluet();
-                break;
-
-
-
 
             case bt_inputDzbq:                                                              // "查询抄表" 按钮
                 //etBenyuebs.setText("");                         // 本月读数
@@ -618,7 +519,7 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                     mTvHmph.setText(cbj.getHmph());          // 用户编号 -- 户号
                     mTvHm.setText(cbj.getHm());              // 户名
                     mTvDzbq.setText(cbj.getDzbq());          // 户名
-                    mTvDh.setText(cbj.getDh());              // 电话号码
+                    mTvDh.setText(TextUtils.isEmpty(cbj.getDh()) ? "" : cbj.getDh());              // 电话号码
 
                     mTvBeny.setText("");                     // 本月表数
                     mTvCmds0.setText(cbj.getCmds0());        // 上月表数
@@ -659,29 +560,14 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                     }
                     /**********************  end  **************************/
 
-
-                    prinshowinfo = "用户编号:" + cbj.getHmph() + "\n" +
-                            "ID卡编号:" + cbj.getDzbq() + "\n" +
-                            "户\t\t名:" + cbj.getHm() + "\n" +
-                            "上月表数:" + cbj.getCmds0() + "\n" +
-                            "上月水量:" + cbj.getSysl0() + "\n" +
-                            "上月结余:" + mTempScjy;
                     dzpd = cbj.getDzbq();
 
-                    tvShowscaninfo.setText(prinshowinfo);
-
-                    //tvShowBankinfo.setVisibility(cbj.getDk().equals("1") ? View.VISIBLE : View.GONE);  // 收款方式: 银行抵扣
-                    //phoneLayout.setVisibility(View.VISIBLE);                            // 显示电话 布局
-                    //tvDh.setText(TextUtils.isEmpty(cbj.getDh()) ? "" : cbj.getDh());    // 布局中的文本添加电话
-                    // Log.d("m520", "保存前的值yfs=" + cbj.getYfs()+"----dzbq="+dzbq);
                 }
                 break;
 
 
             //保存
             case R.id.bt_save:
-                // 0000501048
-                // Log.d("m520",cbj.getDds());
 
                 beny = etBenyuebs.getText().toString().trim();              // 本月表数
                 if (TextUtils.isEmpty(beny)) {
@@ -731,7 +617,6 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                 int payje = MeApplcition.mgr.selectBydzbqYjMoney(dzbq, yuefen.getText().toString().trim());         // 先获取数据库 -- 里面的金额
 
                 if(payje > 0) {
-                    Log.d("m520","进来了2");
                     new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("提示")
                             .setContentText("本月已预交了" + payje + "元，是否继续预交")
@@ -776,7 +661,6 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                 }
 
                 break;
-
 
             case R.id.selectTime:                       // 都是 ： 点我选择抄表月份 弹出年月窗口
                 getTime();
@@ -846,20 +730,9 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
      */
     private void showText() {
         int sl = (Integer.parseInt(beny) - Integer.parseInt(cbj.getCmds0()));
-        //修改数量 Integer.parseInt(cbj.getDds())*2
-        //        sl = sl <= Integer.parseInt(cbj.getDds()) * 2 ? 2 * Integer.parseInt(cbj.getDds()) : sl;
-
-        //yfs抄表月数返回是0时,判断当月用水量是否小于底吨数,是的话就取底吨数,否者按实际的算
         if (ZERO == cbj.getYfs()) {
-            // Log.d("m520", "等于零的时候yfs=" + cbj.getYfs()+"----dzbq="+dzbq);
             sl = sl <= Integer.parseInt(cbj.getDds()) ? Integer.parseInt(cbj.getDds()) : sl;
         } else {
-//            int value = Integer.parseInt(cbj.getDds());
-//            int key = cbj.getYfs();
-//            sl = sl <= value * key ? value * key : sl;
-
-            //sl = sl <= Integer.parseInt(cbj.getDds()) * Integer.parseInt(cbj.getYfs()) ? Integer.parseInt(cbj.getDds()) * Integer.parseInt(cbj.getYfs()): sl;
-//            Log.d("m520111", "不等于零的时候yfs=" + cbj.getYfs()+"----dzbq="+dzbq);
             sl = sl <= Integer.parseInt(cbj.getDds()) * cbj.getYfs() ? Integer.parseInt(cbj.getDds()) * cbj.getYfs() : sl;
         }
 
@@ -871,7 +744,7 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
         mTvHmph.setText(cbj.getHmph());          // 用户编号 -- 户号
         mTvHm.setText(cbj.getHm());              // 户名
         mTvDzbq.setText(cbj.getDzbq());          // 户名
-        mTvDh.setText(cbj.getDh());              // 电话号码
+        mTvDh.setText(TextUtils.isEmpty(cbj.getDh()) ? "" : cbj.getDh());              // 电话号码
 
         mTvBeny.setText(beny);                   // 本月表数
         mTvCmds0.setText(cbj.getCmds0());        // 上月表数
@@ -888,6 +761,8 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
             mTvByjy.setTextColor(Color.BLACK);
         mTvYjMoneyAll.setText(yjMoneyAll);       // 总预交金
         mTvYjMoneyCurrent.setText("");           // 本次预交
+
+        mTvBankinfo.setVisibility(cbj.getDk().equals("1") ? View.VISIBLE : View.INVISIBLE);      // 收款方式: 银行抵扣
 
         if(cbj.getIsChaoBiao() == 1){
             mTvYcbz.setText("已抄");
@@ -914,21 +789,8 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
 
         bybs.setText(beny);
 
-        // 将部分字体的颜色改变
-        SpannableStringBuilder builder = new SpannableStringBuilder(prinshowinfo);
-        //ForegroundColorSpan 为文字前景色，BackgroundColorSpan为文字背景色
-        ForegroundColorSpan redSpan = new ForegroundColorSpan(Color.RED);
-        builder.setSpan(redSpan, prinshowinfo.length()-Prices.m2(yy).length(), prinshowinfo.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        if(yy < 0)
-            tvShowscaninfo.setText(builder);
-        else
-            tvShowscaninfo.setText(prinshowinfo);
-
-        tvShowBankinfo.setVisibility(cbj.getDk().equals("1") ? View.VISIBLE : View.GONE);
-        //
         MeApplcition.mgr.updatebney(cbj.getDzbq(), beny, Prices.m2(yy), Double.parseDouble(yjMoneyAll), String.valueOf(sl), cbj.getCbye());
-        tvDh.setText(TextUtils.isEmpty(cbj.getDh()) ? "" : cbj.getDh());
+
     }
 
 
@@ -992,20 +854,10 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                         String beny = etBenyuebs.getText().toString().trim();           // 年月
                         int sl = (Integer.parseInt(beny) - Integer.parseInt(cbj.getCmds0()));       // 水量
 
-                        //修改数量 Integer.parseInt(cbj.getDds())*2
-                        //        sl = sl <= Integer.parseInt(cbj.getDds()) * 2 ? 2 * Integer.parseInt(cbj.getDds()) : sl;
-
                         //yfs抄表月数返回是0时,判断当月用水量是否小于底吨数,是的话就取底吨数,否者按实际的算
                         if (ZERO == cbj.getYfs()) {
-                            // Log.d("m520", "等于零的时候yfs=" + cbj.getYfs()+"----dzbq="+dzbq);
                             sl = sl <= Integer.parseInt(cbj.getDds()) ? Integer.parseInt(cbj.getDds()) : sl;
                         } else {
-//            int value = Integer.parseInt(cbj.getDds());
-//            int key = cbj.getYfs();
-//            sl = sl <= value * key ? value * key : sl;
-
-                            //sl = sl <= Integer.parseInt(cbj.getDds()) * Integer.parseInt(cbj.getYfs()) ? Integer.parseInt(cbj.getDds()) * Integer.parseInt(cbj.getYfs()): sl;
-//            Log.d("m520111", "不等于零的时候yfs=" + cbj.getYfs()+"----dzbq="+dzbq);
                             sl = sl <= Integer.parseInt(cbj.getDds()) * cbj.getYfs() ? Integer.parseInt(cbj.getDds()) * cbj.getYfs() : sl;
                         }
 
@@ -1024,7 +876,7 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                         mTvHmph.setText(cbj.getHmph());          // 用户编号 -- 户号
                         mTvHm.setText(cbj.getHm());              // 户名
                         mTvDzbq.setText(cbj.getDzbq());          // 户名
-                        mTvDh.setText(cbj.getDh());              // 电话号码
+                        mTvDh.setText(TextUtils.isEmpty(cbj.getDh()) ? "" : cbj.getDh());              // 电话号码
 
                         mTvBeny.setText(beny);                   // 本月表数
                         mTvCmds0.setText(cbj.getCmds0());        // 上月表数
@@ -1073,34 +925,16 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                         boolean b = MeApplcition.mgr.addYjMoney(cbj.getHmph(), yjMoneyCurrent, usernumb, TimeUtils.getCurrentTimeRq());
 
                         if(b) {
-                            // 将部分字体的颜色改变
-                            SpannableStringBuilder builder = new SpannableStringBuilder(prinshowinfo);
-                            // ForegroundColorSpan 为文字前景色，BackgroundColorSpan为文字背景色
-                            ForegroundColorSpan redSpan = new ForegroundColorSpan(Color.RED);
-                            builder.setSpan(redSpan, prinshowinfo.length() - str_byjy.length(), prinshowinfo.length(),
-                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            if (byjy < 0)
-                                tvShowscaninfo.setText(builder);
-                            else
-                                tvShowscaninfo.setText(prinshowinfo);
 
-                            btSourcebult.setEnabled(true);
-
-                            Cbj cbj123 = MeApplcition.mgr.queryTheCursor(dzbq, yuefen.getText().toString().trim());
-                            Log.d("m520", cbj123.toString());
-                            Log.d("m520", "Double.parseDouble(yjMoneyAll)" + Double.parseDouble(yjMoneyAll));
                             MeApplcition.mgr.updatebney(dzpd, beny, str_byjy, Double.parseDouble(yjMoneyAll), String.valueOf(sl), cbj.getCbye());
-
-
-
-                            // 将要提交的金额
-                            // taskPresenter.upPayData(cbj.getHmph(), yjMoney, usernumb);   // 这个是错误的 -- 添加了上次的！
-                            // taskPresenter.upPayData(cbj.getHmph(), yjMoneyCurrent, usernumb);
 
                             new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                                     .setTitleText("成功缴费:" + yjMoneyCurrent + "元")
                                     .setConfirmText("确认")
                                     .show();
+
+                            btPrint.setEnabled(false);
+
                         }else {
                             new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                                     .setTitleText("预交金额失败")
@@ -1242,7 +1076,6 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                         break;
                 }
 
-
                 if (result == null || result.toString().equals("-1")) {         //  读取出错
                     msg.what = 0;
                     msg.arg2 = mTagType;
@@ -1286,119 +1119,6 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
         }
 
     }
-
-
-    private void checkBluet() {
-        try {
-
-            if (!bluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                getActivity().startActivityForResult(enableBtIntent, 1);
-            } else {
-                bluetoothAdapter.startDiscovery();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            System.out.println("onReceiveonReceive");
-            String action = intent.getAction();
-            // 获得已经搜索到的蓝牙设备
-            if (action.equals(BluetoothDevice.ACTION_FOUND)) {
-                BluetoothDevice device = intent
-                        .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                // 搜索到的不是已经绑定的蓝牙设备
-                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-                    // 防止重复添加
-                    if (searchDevicesList.indexOf(device) == -1)
-                        searchDevicesList.add(new BluethBean(device, false));
-                    mSearchAdapter.notifyDataSetChanged();
-                }
-                // 搜索完成
-            } else if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)) {
-
-            } else if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
-                // 状态改变的广播
-                device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String name = device.getName();
-                if (TextUtils.isEmpty(name) || device.getName().equalsIgnoreCase(name)) {
-                    int connectState = device.getBondState();
-                    switch (connectState) {
-                        case BluetoothDevice.BOND_NONE:  //10
-                            Toast.makeText(getActivity(), "取消配对：" + device.getName(), Toast.LENGTH_SHORT).show();
-                            break;
-                        case BluetoothDevice.BOND_BONDING:  //11
-                            Toast.makeText(getActivity(), "正在配对：" + device.getName(), Toast.LENGTH_SHORT).show();
-                            break;
-                        case BluetoothDevice.BOND_BONDED:   //12
-                            Toast.makeText(getActivity(), "完成配对：" + device.getName(), Toast.LENGTH_SHORT).show();
-                            try {
-                                // 连接
-                                connect(device);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                    }
-                }
-            }
-        }
-    };
-
-
-
-    /**
-     * 蓝牙设备的连接（客户端）
-     *
-     * @param device 蓝牙设备
-     */
-    private void connect(BluetoothDevice device) {
-        // 固定的UUID
-        final String SPP_UUID = "00001101-0000-1000-8000-00805F9B34FB";
-        UUID uuid = UUID.fromString(SPP_UUID);
-        try {
-            socket = device.createRfcommSocketToServiceRecord(uuid);
-            socket.connect();
-
-            outputStream = socket.getOutputStream();
-            inputStream = socket.getInputStream();
-
-            btPrint.setEnabled(true);                   // 蓝牙连接后，才可以点击 "打印 -- 按钮"
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void unpairDevice(BluetoothDevice device) {
-        try {
-            Method m = device.getClass().getMethod("removeBond", (Class[]) null);
-            m.invoke(device, (Object[]) null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void close() {
-        if (null == socket)
-            return;
-        if (socket.isConnected()) {
-            try {
-                outputStream.close();
-                inputStream.close();
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     //16进制转10进制
     public static int HexToInt(String strHex) {

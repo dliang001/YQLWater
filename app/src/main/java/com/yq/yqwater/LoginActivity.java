@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -13,7 +15,9 @@ import com.smtlibrary.dialog.SweetAlertDialog;
 import com.yq.model.LoginBean;
 import com.yq.tasks.presenter.TaskPresenterImpl;
 import com.yq.tasks.views.LoginView;
+import com.yq.utils.SharePrefUtil;
 import com.yq.utils.TimeUtils;
+import com.yq.view.ClearEditText;
 
 import java.util.List;
 
@@ -25,8 +29,8 @@ import java.util.List;
  * @desc ${TODD}
  */
 public class LoginActivity extends Activity implements LoginView ,Thread.UncaughtExceptionHandler{
-    private EditText mNameEt;
-    private EditText mPwdEt;
+    private ClearEditText mNameEt;
+    private ClearEditText mPwdEt;
     private TaskPresenterImpl taskPresenter;
     private SweetAlertDialog sweetAlertDialog;
     LoginBean.DATABean dataBean;
@@ -35,6 +39,10 @@ public class LoginActivity extends Activity implements LoginView ,Thread.Uncaugh
     String usernam;//姓名
     /** 登录账号 */
     String usernumb;//操作员编码
+
+
+    /** 记住账号密码 -- 选择框 */
+    private CheckBox mCbRemember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +59,18 @@ public class LoginActivity extends Activity implements LoginView ,Thread.Uncaugh
     }
 
     private void initUI() {
-        mNameEt = (EditText) findViewById(R.id.name_et);
-        mPwdEt = (EditText) findViewById(R.id.pwd_et);
+        mNameEt = (ClearEditText) findViewById(R.id.name_et);
+        mPwdEt = (ClearEditText) findViewById(R.id.pwd_et);
+
+        mCbRemember = (CheckBox) findViewById(R.id.cb_remember);
+
+        boolean isRemember = SharePrefUtil.getBoolean(LoginActivity.this, SharePrefUtil.KEY.LOGIN_REMEMBER, true);
+        mCbRemember.setChecked(isRemember);
+
+        if(isRemember){
+            mNameEt.setText(SharePrefUtil.getString(LoginActivity.this, SharePrefUtil.KEY.LOGIN_ACCOUNT, ""));
+            mPwdEt.setText(SharePrefUtil.getString(LoginActivity.this, SharePrefUtil.KEY.LOGIN_PASSWORD, ""));
+        }
 
         // 测试
         // mNameEt.setText("100000");
@@ -77,12 +95,13 @@ public class LoginActivity extends Activity implements LoginView ,Thread.Uncaugh
 
 
 
-        final String name = mNameEt.getText().toString();
-        final String pwd = mPwdEt.getText().toString();
+        final String name = mNameEt.getText().toString().trim();
+        final String pwd = mPwdEt.getText().toString().trim();
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(pwd)) {
             Toast.makeText(this, "账号或密码不能为空", Toast.LENGTH_SHORT).show();
             return;
         } else {
+
 
             taskPresenter.loginData(name, pwd);
 
@@ -129,6 +148,14 @@ public class LoginActivity extends Activity implements LoginView ,Thread.Uncaugh
     public void onLoginSuccess(LoginBean cbData) {
         if (cbData != null) {
             Toast.makeText(this, "登录成功！", Toast.LENGTH_SHORT).show();
+
+            // 记录用户密码到本地！
+            SharePrefUtil.saveString(LoginActivity.this, SharePrefUtil.KEY.LOGIN_ACCOUNT, mNameEt.getText().toString().trim());
+            SharePrefUtil.saveString(LoginActivity.this, SharePrefUtil.KEY.LOGIN_PASSWORD, mPwdEt.getText().toString().trim());
+            SharePrefUtil.saveBoolean(LoginActivity.this, SharePrefUtil.KEY.LOGIN_REMEMBER, mCbRemember.isChecked());
+
+
+
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 
             List<LoginBean.DATABean> data = cbData.getDATA();

@@ -17,4 +17,8 @@
 
 
     <color name="dim_foreground_dark_disabled">#80bebebe</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="border">#C7C7C7</color>
 </resources>

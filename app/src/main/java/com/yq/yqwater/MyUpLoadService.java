@@ -63,7 +63,7 @@ public class MyUpLoadService extends Service {
 
 
     /**
-     * 五秒上传一个客户
+     * 10秒上传一个客户
      */
     class UploadData extends Thread {
 
@@ -74,7 +74,7 @@ public class MyUpLoadService extends Service {
                 try {
                     //Log.d("m520", "UploadData");
                     LogUtils.sysout("====uploadData:", getId());
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                     if (null != MeApplcition.mgr) {
                         UpCbjBean cbj = MeApplcition.mgr.getFirstData();
                         if (!TextUtils.isEmpty(cbj.getHmph()))
@@ -89,7 +89,7 @@ public class MyUpLoadService extends Service {
     }
 
     /**
-     * 五秒上传一个预交金额
+     * 30秒上传一个预交金额
      */
     class UploadYjMoney extends Thread {
 
@@ -99,20 +99,24 @@ public class MyUpLoadService extends Service {
             while (isRun) {
                 try {
                     LogUtils.sysout("====uploadYjMoney:", getId());
-                    Thread.sleep(5000);
+                    Thread.sleep(30000);
                     if (null != MeApplcition.mgr) {
                         YjMoneyBean yjm = MeApplcition.mgr.getYjMoneyFirstData();
 
+                        //Log.d("m520", "yjm.toString():" + yjm.toString());
+
                         if (!TextUtils.isEmpty(yjm.getYjMoney())) {
+                            //Log.d("m520", "!TextUtils.isEmpty(yjm.getYjMoney())");
                             taskPresenter.upPayData(yjm.getId(), yjm.getHmph(), yjm.getYjMoney(), yjm.getCzybm());
 
+                        }else{
+                            //Log.d("m520", "没进");
                         }
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     //Log.d("m520", "UploadYjMoney -- e.getMessage()" + e.getMessage());
                 }
-
             }
         }
     }

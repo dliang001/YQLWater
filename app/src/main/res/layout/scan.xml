@@ -74,6 +74,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="用户编号:"/>
 
                     <TextView
@@ -81,12 +82,14 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="户名:"/>
 
                     <TextView
@@ -94,10 +97,12 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                 </LinearLayout>
                 <LinearLayout
+                    android:layout_marginTop="2dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -106,6 +111,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="电子标签:"/>
 
                     <TextView
@@ -113,12 +119,14 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="电话号码:"/>
 
                     <TextView
@@ -126,6 +134,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""
                         android:textColor="@android:color/holo_blue_dark"/>
 
@@ -135,7 +144,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -149,6 +158,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="本月表数:"/>
 
                     <TextView
@@ -156,12 +166,14 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="上月表数:"/>
 
                     <TextView
@@ -169,10 +181,12 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                 </LinearLayout>
                 <LinearLayout
+                    android:layout_marginTop="2dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -181,6 +195,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="本月水量:"/>
 
                     <TextView
@@ -188,12 +203,14 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="单价:"/>
 
                     <TextView
@@ -201,6 +218,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                 </LinearLayout>
@@ -208,7 +226,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -222,6 +240,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="上月结余:"/>
 
                     <TextView
@@ -229,12 +248,14 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="总预交金:"/>
 
                     <TextView
@@ -242,10 +263,12 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                 </LinearLayout>
                 <LinearLayout
+                    android:layout_marginTop="2dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -254,6 +277,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="本月应收:"/>
 
                     <TextView
@@ -261,12 +285,14 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="本次预交:"/>
 
                     <TextView
@@ -274,11 +300,13 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="2dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -287,6 +315,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="本月结余:"/>
 
                     <TextView
@@ -294,12 +323,14 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text=""/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="7"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="收款方式:"/>
 
                     <TextView
@@ -307,6 +338,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="10"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="银行抵扣"
                         android:textStyle="bold"
                         android:textColor="@android:color/holo_red_dark"
@@ -370,8 +402,8 @@
                     android:textColor="@android:color/holo_blue_dark" />
             </LinearLayout>
 
-            <RelativeLayout
-                android:layout_marginTop="10dp"
+            <LinearLayout
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
@@ -380,11 +412,10 @@
 
                 <EditText
                     android:id="@+id/et_benyuebs"
-                    android:layout_width="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/bt_save"
+                    android:layout_weight="1"
                     android:background="@drawable/bk"
                     android:hint="请输入本月表数"
                     android:inputType="number"
@@ -393,26 +424,18 @@
 
                 <Button
                     android:id="@+id/bt_save"
-                    android:layout_width="80dp"
-                    android:layout_height="35dp"
                     android:layout_marginLeft="5dp"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
                     android:background="@drawable/btn_bg"
                     android:text="保存"
                     android:textColor="@color/btn_text_color"
                     android:layout_alignParentBottom="true"
                     android:layout_toStartOf="@+id/bt_payMoney"/>
 
-                <Button
-                    android:id="@+id/bt_payMoney"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="5dp"
-                    android:background="@drawable/btn_bg"
-                    android:text="预交水费"
-                    android:textColor="@color/btn_text_color"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"/>
-            </RelativeLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -421,33 +444,25 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/bt_sourcebult"
+                    android:id="@+id/bt_payMoney"
+                    android:layout_marginRight="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg"
-                    android:text="搜索蓝牙"
+                    android:text="预交水费"
                     android:textColor="@color/btn_text_color" />
 
                 <Button
                     android:id="@+id/bt_print"
+                    android:layout_marginLeft="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg"
                     android:text="打印"
                     android:textColor="@color/btn_text_color" />
             </LinearLayout>
-
-            <com.yq.view.MyListView
-                android:id="@+id/lv_scanbul"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp" />
 
         </LinearLayout>
     </ScrollView>
