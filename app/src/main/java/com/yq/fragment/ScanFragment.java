@@ -232,6 +232,7 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                     break;
 
                 case 1:                                                             // 读取 RFID 卡成功
+                    etBenyuebs.setText("");                                     // 情况 ：本月表数
                     if (msg.obj.toString() == null) {
                         return;
                     }
@@ -275,7 +276,6 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                         PlayRing.ring(getActivity());
 
                         bybs.setText(cbj.getIsChaoBiao() == 0 ? "未抄表" : "已抄表");
-                        etBenyuebs.setText("");                                             // 情况 ：本月表数
                         yjMoneyAll = MeApplcition.mgr.selectBydzbqYjMoney(dzbq,yuefen.getText().toString().trim()) + "";       // 先获取数据库 -- 里面的金额;                                               // 预交钱
 
                         btSave.setEnabled(true);
@@ -474,7 +474,7 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                 break;
 
             case bt_inputDzbq:                                                              // "查询抄表" 按钮
-                //etBenyuebs.setText("");                         // 本月读数
+                etBenyuebs.setText("");                         // 本月读数
                 dzbq = etDzbq.getText().toString().trim();      // 标签号
 
                 if (TextUtils.isEmpty(dzbq)) {
@@ -764,16 +764,16 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
 
         mTvBankinfo.setVisibility(cbj.getDk().equals("1") ? View.VISIBLE : View.INVISIBLE);      // 收款方式: 银行抵扣
 
-        if(cbj.getIsChaoBiao() == 1){
+//        if(cbj.getIsChaoBiao() == 1){
             mTvYcbz.setText("已抄");
             mTvYcbz.setTextColor(Color.RED);
             mLayoutYcbz.setBackgroundColor(Color.YELLOW);
 
-        }else{
-            mTvYcbz.setText("未抄");
-            mTvYcbz.setTextColor(Color.BLACK);
-            mLayoutYcbz.setBackgroundColor(Color.TRANSPARENT);
-        }
+//        }else{
+//            mTvYcbz.setText("未抄");
+//            mTvYcbz.setTextColor(Color.BLACK);
+//            mLayoutYcbz.setBackgroundColor(Color.TRANSPARENT);
+//        }
         /**********************  end  **************************/
 
         prinshowinfo = "用户编号:" + cbj.getHmph() + "\n" +
@@ -894,16 +894,16 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                         mTvYjMoneyAll.setText(yjMoneyAll);       // 总预交金
                         mTvYjMoneyCurrent.setText(yjMoneyCurrent);           // 本次预交
 
-                        if(cbj.getIsChaoBiao() == 1){
+//                        if(cbj.getIsChaoBiao() == 1){
                             mTvYcbz.setText("已抄");
                             mTvYcbz.setTextColor(Color.RED);
                             mLayoutYcbz.setBackgroundColor(Color.YELLOW);
-
-                        }else{
-                            mTvYcbz.setText("未抄");
-                            mTvYcbz.setTextColor(Color.BLACK);
-                            mLayoutYcbz.setBackgroundColor(Color.TRANSPARENT);
-                        }
+//
+//                        }else{
+//                            mTvYcbz.setText("未抄");
+//                            mTvYcbz.setTextColor(Color.BLACK);
+//                            mLayoutYcbz.setBackgroundColor(Color.TRANSPARENT);
+//                        }
                         /**********************  end  **************************/
 
                         prinshowinfo =
@@ -933,7 +933,7 @@ public class ScanFragment extends BaseFragment implements OnDateSetListener {
                                     .setConfirmText("确认")
                                     .show();
 
-                            btPrint.setEnabled(false);
+                            //btPrint.setEnabled(true);
 
                         }else {
                             new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)

@@ -78,11 +78,11 @@ public class LoginActivity extends Activity implements LoginView ,Thread.Uncaugh
     }
 
     public void loginClick(View v) {
-        if(TimeUtils.compareTime(TimeUtils.getCurrentTimeyyyyMMdd(),"20170524","yyyyMMdd")) {
+        if(TimeUtils.compareTime(TimeUtils.getCurrentTimeyyyyMMdd(),"20170615","yyyyMMdd")) {
 
             new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
                     .setTitleText("提示")
-                    .setContentText("使用时间已到")
+                    .setContentText("试用时间已到")
                     .setConfirmText("  确认  ")
                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override

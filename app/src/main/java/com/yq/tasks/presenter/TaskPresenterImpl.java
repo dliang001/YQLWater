@@ -1,12 +1,12 @@
 package com.yq.tasks.presenter;
 
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smtlibrary.https.OkHttpUtils;
 import com.smtlibrary.utils.JsonUtils;
 import com.smtlibrary.utils.LogUtils;
-import com.smtlibrary.utils.SystemUtils;
 import com.yq.model.CbData;
 import com.yq.model.Dh;
 import com.yq.model.LoginBean;
@@ -25,8 +25,13 @@ import com.yq.tasks.views.UView;
 import com.yq.utils.WriteFileToSDUtils;
 import com.yq.yqwater.MeApplcition;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by gbh on 16/12/7.
@@ -177,6 +182,109 @@ public class TaskPresenterImpl implements TaskPresenter {
         });
     }
 
+
+
+
+
+    /**
+     * 异步--下载数据
+     */
+    public class downDataTask extends AsyncTask<String, Integer, Boolean> {
+
+        IView taskIView;
+        String strUrl;
+        String json;
+
+        public downDataTask(IView iView, String url){
+            taskIView = iView;
+            this.strUrl = url;
+
+        }
+
+        @Override
+        protected void onPreExecute() {                                         // 执行前
+            super.onPreExecute();
+            taskIView.showPress();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {            // 执行中
+
+            boolean b = false;
+
+            HttpURLConnection urlConn = null;
+            try {
+                // 新建一个URL对象
+                URL url = new URL(strUrl);
+                // 打开一个HttpURLConnection连接
+                urlConn = (HttpURLConnection) url.openConnection();
+                // 设置连接超时时间
+                urlConn.setConnectTimeout(20 * 1000);
+                // 设置请求方式
+                urlConn.setRequestMethod("GET");
+                // 设置读取时间
+                urlConn.setReadTimeout(20 * 1000);
+
+                // 开始连接
+                urlConn.connect();
+                // 判断请求是否成功
+                if (urlConn.getResponseCode() == 200) {
+                    // 获取返回的数据
+                    InputStream in = urlConn.getInputStream();
+                    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+
+                    byte[] buff = new byte[1024];
+                    int len = -1;
+                    while((len = in.read(buff)) != -1){
+                        bout.write(buff, 0, len);
+                    }
+
+                    json = new String(bout.toByteArray());
+                    // Log.d("m520", "get -- json:"+json);
+
+                    b = true;
+                } else {
+                    Log.d("m520", "Get方式请求失败");
+                    b = false;
+                }
+            }catch (Exception e){
+                Log.d("m520", "get -- e.getMessage():" + e.getMessage());
+                b = false;
+            }
+
+            // 关闭连接
+            urlConn.disconnect();
+
+            return b;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean b) {           // 执行后
+            super.onPostExecute(b);
+
+            if(b){
+                taskIView.hidePress();
+                try {
+                    CbData cbData = JsonUtils.deserialize(json, CbData.class);
+                    if (cbData.getRet().equals("ok"))
+                        taskIView.onDownSuccess(cbData);
+                    else {
+                        taskIView.onFaile("下载失败,请重试。");
+                    }
+                } catch (Exception e) {
+                    // e.printStackTrace();
+                    taskIView.onFaile("下载失败,请重试。");
+                }
+
+            }else{
+                taskIView.hidePress();
+                taskIView.onFaile("网络异常,请重试。");
+            }
+
+
+        }
+    }
+
     /**
      * 下载数据<p>
      * 下载 此月，此用户，所有区域的用户数据
@@ -186,34 +294,15 @@ public class TaskPresenterImpl implements TaskPresenter {
      */
     @Override
     public void downData(String id, String fbh) {
-        String url = baseUrl + "get_cbsj&";
-        iView.showPress();
+//        String url = baseUrl + "get_cbsj&";
 
-        List<OkHttpUtils.Param> paramList = getParams(id, fbh);
-        OkHttpUtils.post(url, paramList, new OkHttpUtils.ResultCallBack<String>() {
-            @Override
-            public void onSuccess(String response) {
-                LogUtils.sysout("=====res", response);
-                iView.hidePress();
-                try {
-                    CbData cbData = JsonUtils.deserialize(response, CbData.class);
-                    if (cbData.getRet().equals("ok"))
-                        iView.onDownSuccess(cbData);
-                    else {
-                        iView.onFaile("下载失败,请重试。");
-                    }
-                } catch (Exception e) {
-                    //                    e.printStackTrace();
-                    iView.onFaile("下载失败,请重试。");
-                }
-            }
+        String url = baseUrl + "get_cbsj&DATA={" +
+                "'id':'" + id +
+                "','fbh':'" + fbh +
+                "'}";
 
-            @Override
-            public void onFailure(Exception e) {
-                iView.hidePress();
-                iView.onFaile("网络异常,请重试。");
-            }
-        });
+        new downDataTask(iView, url).execute();
+
     }
 
     /**
@@ -246,7 +335,6 @@ public class TaskPresenterImpl implements TaskPresenter {
                 } else {
                     uView.onFaile("上传失败,请重试。");
                 }
-
             }
 
             @Override
@@ -288,7 +376,7 @@ public class TaskPresenterImpl implements TaskPresenter {
                         //Log.d("m520","UploadYjMoney -- ok");
 
                         //在本地数据库中修改上传标志
-                       MeApplcition.mgr.updateUploadYjMoney(yjMoneyDatabaseId);
+                        MeApplcition.mgr.updateUploadYjMoney(yjMoneyDatabaseId);
 
                     } else {
                         //uView.onFaile("上传失败,请重试。");
@@ -393,6 +481,8 @@ public class TaskPresenterImpl implements TaskPresenter {
     private List<OkHttpUtils.Param> getParams(String id, String fbh) {
         List<OkHttpUtils.Param> paramList = new ArrayList<>();
         paramList.add(new OkHttpUtils.Param("DATA", new Prams(id, fbh).toString()));
+
+        Log.d("m520",new Prams(id, fbh).toString());
         return paramList;
     }
 }
