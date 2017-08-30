@@ -78,20 +78,20 @@ public class LoginActivity extends Activity implements LoginView ,Thread.Uncaugh
     }
 
     public void loginClick(View v) {
-        if(TimeUtils.compareTime(TimeUtils.getCurrentTimeyyyyMMdd(),"20170615","yyyyMMdd")) {
-
-            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText("提示")
-                    .setContentText("试用时间已到")
-                    .setConfirmText("  确认  ")
-                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            sweetAlertDialog.dismiss();
-                        }
-                    }).show();
-            return;
-        }
+//        if(TimeUtils.compareTime(TimeUtils.getCurrentTimeyyyyMMdd(),"20170615","yyyyMMdd")) {
+//
+//            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+//                    .setTitleText("提示")
+//                    .setContentText("试用时间已到")
+//                    .setConfirmText("  确认  ")
+//                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+//                        @Override
+//                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+//                            sweetAlertDialog.dismiss();
+//                        }
+//                    }).show();
+//            return;
+//        }
 
 
 
